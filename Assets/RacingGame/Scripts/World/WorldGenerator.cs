@@ -370,4 +370,114 @@ public static class WorldGenerator
     {
         return Mathf.Clamp(v, 1, 99);
     }
+
+    private const long SeasonPrizeTop = 50000000L;
+    private const long SeasonPrizeBottom = 5000000L;
+
+    public static long SeasonPrize(int posZeroBased, int teamCount)
+    {
+        float frac = teamCount > 1 ? posZeroBased / (float)(teamCount - 1) : 0f;
+        return (long)Mathf.Lerp(SeasonPrizeTop, SeasonPrizeBottom, frac);
+    }
+
+    public static void RolloverSeason(GameState state)
+    {
+        List<StandingEntry> finalC = new List<StandingEntry>(state.season.constructorStandings);
+        finalC.Sort((a, b) => b.points.CompareTo(a.points));
+        int teamCount = Mathf.Max(finalC.Count, 1);
+        for (int pos = 0; pos < finalC.Count; pos++)
+        {
+            TeamData team = FindTeam(state, finalC[pos].id);
+            if (team == null) continue;
+            team.money += SeasonPrize(pos, teamCount);
+            if (team.id == state.playerTeamId)
+            {
+                int repDelta = Mathf.Clamp(6 - pos * 2, -3, 8);
+                team.reputation = Mathf.Clamp(team.reputation + repDelta, 0, 100);
+            }
+        }
+
+        for (int t = 0; t < state.teams.Count; t++)
+        {
+            TeamData team = state.teams[t];
+            if (team.id == state.playerTeamId) continue;
+            float bump = Random.Range(2f, 6f);
+            for (int c = 0; c < team.cars.Count; c++)
+            {
+                CarData car = team.cars[c];
+                car.frontWing = ClampF(car.frontWing + bump);
+                car.rearWing = ClampF(car.rearWing + bump);
+                car.floor = ClampF(car.floor + bump);
+                car.enginePower = ClampF(car.enginePower + bump);
+                car.engineEfficiency = ClampF(car.engineEfficiency + bump);
+                car.balance = ClampF(car.balance + bump);
+                car.suspension = ClampF(car.suspension + bump);
+                car.reliability = ClampF(car.reliability + bump);
+            }
+            team.aiCarPerformance = Mathf.Clamp(team.aiCarPerformance + bump, 0f, 100f);
+        }
+
+        for (int i = 0; i < state.driverPool.Count; i++)
+        {
+            DriverData d = state.driverPool[i];
+            d.age += 1;
+            d.contractYears = Mathf.Max(1, d.contractYears - 1);
+        }
+        for (int i = 0; i < state.engineerPool.Count; i++)
+        {
+            EngineerData e = state.engineerPool[i];
+            e.age += 1;
+            e.contractYears = Mathf.Max(1, e.contractYears - 1);
+        }
+        for (int i = 0; i < state.staffPool.Count; i++)
+        {
+            StaffData s = state.staffPool[i];
+            s.contractYears = Mathf.Max(1, s.contractYears - 1);
+        }
+
+        for (int t = 0; t < state.teams.Count; t++)
+        {
+            state.teams[t].seasonWins = 0;
+            state.teams[t].championshipPoints = 0;
+        }
+        for (int i = 0; i < state.season.constructorStandings.Count; i++)
+        {
+            state.season.constructorStandings[i].points = 0;
+            state.season.constructorStandings[i].wins = 0;
+        }
+        for (int i = 0; i < state.season.driverStandings.Count; i++)
+        {
+            state.season.driverStandings[i].points = 0;
+            state.season.driverStandings[i].wins = 0;
+        }
+
+        state.seasonYear += 1;
+        state.currentWeek = 1;
+        state.season.year = state.seasonYear;
+        state.season.currentRound = 1;
+        state.season.calendar.Clear();
+        for (int i = 0; i < 22; i++)
+        {
+            RaceData race = new RaceData();
+            race.id = "race_" + i;
+            race.round = i + 1;
+            race.trackName = trackNames[i % trackNames.Length];
+            race.country = countries[i % countries.Length];
+            race.laps = Random.Range(44, 71);
+            race.trackLengthKm = Random.Range(38, 71) / 10f + 3f;
+            race.weatherWetChance = Random.Range(0f, 0.4f);
+            state.season.calendar.Add(race);
+        }
+    }
+
+    private static TeamData FindTeam(GameState state, string id)
+    {
+        for (int i = 0; i < state.teams.Count; i++) if (state.teams[i].id == id) return state.teams[i];
+        return null;
+    }
+
+    private static float ClampF(float v)
+    {
+        return Mathf.Clamp(v, 0f, 100f);
+    }
 }

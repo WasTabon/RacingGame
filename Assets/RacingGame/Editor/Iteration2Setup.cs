@@ -111,6 +111,17 @@ public class Iteration2Setup
         money.gameObject.AddComponent<ButtonPunch>();
         hub.financeButton = financeBtn;
         ResourceCounter rep = CreateChip(hud.transform, "RepChip", "reputation", new Color(0.96f, 0.78f, 0.25f), new Vector2(336, -16), new Vector2(210, 86), false);
+        Button standingsBtn = rep.gameObject.AddComponent<Button>();
+        standingsBtn.targetGraphic = rep.GetComponent<Image>();
+        ColorBlock scb = standingsBtn.colors;
+        scb.normalColor = Color.white;
+        scb.highlightedColor = Color.white;
+        scb.pressedColor = new Color(0.85f, 0.85f, 0.85f);
+        scb.selectedColor = Color.white;
+        scb.disabledColor = Color.white;
+        standingsBtn.colors = scb;
+        rep.gameObject.AddComponent<ButtonPunch>();
+        hub.standingsButton = standingsBtn;
 
         Button settingsBtn = CreateIconButton(hud.transform, "SettingsButton", "settings", Color.white, true);
         SetRect(settingsBtn.GetComponent<RectTransform>(), new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(86, 86), new Vector2(-20, -16));

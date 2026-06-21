@@ -575,9 +575,20 @@ public class WeekendController : MonoBehaviour
         for (int i = 0; i < st.season.constructorStandings.Count; i++)
             if (st.season.constructorStandings[i].id == "team_0") { champPos = i + 1; break; }
 
-        string netStr = (lastNet >= 0 ? "+" : "-") + ResourceCounter.FormatMoney(System.Math.Abs(lastNet));
-        resultsSummaryText.text = "Best P" + best + "   •   " + pts + " pts   •   Champ P" + champPos
-            + "\nPayout " + netStr + "   •   +" + lastRP + " RP";
+        bool seasonOver = st.season.NextRace == null;
+        if (seasonOver)
+        {
+            string champ = TeamName(st.season.constructorStandings.Count > 0 ? st.season.constructorStandings[0].id : "");
+            long prize = WorldGenerator.SeasonPrize(champPos - 1, Mathf.Max(st.season.constructorStandings.Count, 1));
+            resultsSummaryText.text = "SEASON " + st.season.year + " COMPLETE"
+                + "\nChampion " + champ + "   •   You P" + champPos + "   •   Prize " + ResourceCounter.FormatMoney(prize);
+        }
+        else
+        {
+            string netStr = (lastNet >= 0 ? "+" : "-") + ResourceCounter.FormatMoney(System.Math.Abs(lastNet));
+            resultsSummaryText.text = "Best P" + best + "   •   " + pts + " pts   •   Champ P" + champPos
+                + "\nPayout " + netStr + "   •   +" + lastRP + " RP";
+        }
     }
 
     private Color PosColor(int pos)
@@ -591,9 +602,15 @@ public class WeekendController : MonoBehaviour
     private void FinishWeekend()
     {
         GameState st = GameManager.Instance.State;
-        st.currentWeek += 2;
-        RaceData next = st.season.NextRace;
-        if (next != null) st.season.currentRound = next.round;
+        if (st.season.NextRace == null)
+        {
+            WorldGenerator.RolloverSeason(st);
+        }
+        else
+        {
+            st.currentWeek += 2;
+            st.season.currentRound = st.season.NextRace.round;
+        }
         SaveManager.Instance.SaveGame(st);
         SoundManager.Instance.PlayClick();
         TransitionManager.Instance.LoadScene("Hub");

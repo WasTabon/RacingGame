@@ -20,6 +20,7 @@ public class HubController : MonoBehaviour
 
     public Button nextRaceButton;
     public Button financeButton;
+    public Button standingsButton;
     public TMP_Text nextRaceRoundText;
     public TMP_Text nextRaceTrackText;
     public TMP_Text nextRaceInfoText;
@@ -41,6 +42,7 @@ public class HubController : MonoBehaviour
         if (settingsButton != null) settingsButton.onClick.AddListener(() => settingsPopup.Show());
         if (nextRaceButton != null) nextRaceButton.onClick.AddListener(() => { SoundManager.Instance.PlayClick(); TransitionManager.Instance.LoadScene("Weekend"); });
         if (financeButton != null) financeButton.onClick.AddListener(() => { SoundManager.Instance.PlayClick(); TransitionManager.Instance.LoadScene("Finance"); });
+        if (standingsButton != null) standingsButton.onClick.AddListener(() => { SoundManager.Instance.PlayClick(); TransitionManager.Instance.LoadScene("Standings"); });
 
         SelectTab(0, false);
         PopulateTeam();
