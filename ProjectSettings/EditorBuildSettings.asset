@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/RacingGame/Scenes/Hub.unity
     guid: cf29e488ff09e3f47801ce7283524f71
+  - enabled: 1
+    path: Assets/RacingGame/Scenes/Staff.unity
+    guid: eb9af90095c168b4784be9dea689f529
   m_configObjects: {}

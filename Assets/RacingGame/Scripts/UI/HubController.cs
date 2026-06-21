@@ -29,6 +29,8 @@ public class HubController : MonoBehaviour
 
     private int currentTab = -1;
 
+    private static readonly string[] tabScenes = { null, "Staff", null, null, null };
+
     private void Start()
     {
         if (GameManager.Instance.State == null)
@@ -51,8 +53,19 @@ public class HubController : MonoBehaviour
         {
             if (navClickables[i] == null) continue;
             int idx = i;
-            navClickables[i].onClick.AddListener(() => SelectTab(idx, true));
+            navClickables[i].onClick.AddListener(() => OnNavClicked(idx));
         }
+    }
+
+    private void OnNavClicked(int idx)
+    {
+        if (idx >= 0 && idx < tabScenes.Length && !string.IsNullOrEmpty(tabScenes[idx]))
+        {
+            SoundManager.Instance.PlayClick();
+            TransitionManager.Instance.LoadScene(tabScenes[idx]);
+            return;
+        }
+        SelectTab(idx, true);
     }
 
     private void AnimateTopBar()

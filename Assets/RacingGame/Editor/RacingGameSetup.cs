@@ -546,6 +546,7 @@ public class RacingGameSetup
         cam.backgroundColor = ColorBg;
         cam.orthographic = true;
         go.tag = "MainCamera";
+        go.AddComponent<AudioListener>();
     }
 
     private static void CreateManagers()
