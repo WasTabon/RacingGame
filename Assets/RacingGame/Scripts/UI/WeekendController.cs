@@ -32,7 +32,7 @@ public class RaceEntrant
 public class WeekendController : MonoBehaviour
 {
     // ---- tuning knobs ----
-    private const float BaseRaceSeconds = 30f;
+    private const float BaseRaceSeconds = 75f;
     private const float DisplayLapSeconds = 92f;
     private const float DnfBasePerSecond = 0.004f;
     private const float NoiseAmp = 0.06f;
