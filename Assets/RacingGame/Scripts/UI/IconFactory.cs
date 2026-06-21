@@ -36,6 +36,12 @@ public static class IconFactory
             case "flag": DrawFlag(tex, color); break;
             case "close": DrawCross(tex, color); break;
             case "back": DrawArrowLeft(tex, color); break;
+            case "staff": DrawStaff(tex, color); break;
+            case "research": DrawResearch(tex, color); break;
+            case "car": DrawCar(tex, color); break;
+            case "facility": DrawFacility(tex, color); break;
+            case "home": DrawHome(tex, color); break;
+            case "chevron": DrawChevron(tex, color); break;
             default: DrawRingIcon(tex, color); break;
         }
 
@@ -380,5 +386,59 @@ public static class IconFactory
     {
         DrawTriangle(tex, color, 0.28f, 0.5f, 0.54f, 0.28f, 0.54f, 0.72f);
         FillRect(tex, 0.50f, 0.44f, 0.74f, 0.56f, color);
+    }
+
+    private static void DrawStaff(Texture2D tex, Color color)
+    {
+        FillCircle(tex, 0.5f, 0.66f, 0.15f, color);
+        DrawTriangle(tex, color, 0.24f, 0.24f, 0.76f, 0.24f, 0.5f, 0.52f);
+        FillRect(tex, 0.28f, 0.24f, 0.72f, 0.36f, color);
+    }
+
+    private static void DrawResearch(Texture2D tex, Color color)
+    {
+        DrawTriangle(tex, color, 0.5f, 0.62f, 0.26f, 0.22f, 0.74f, 0.22f);
+        FillRect(tex, 0.44f, 0.58f, 0.56f, 0.80f, color);
+        FillRect(tex, 0.40f, 0.78f, 0.60f, 0.84f, color);
+        PunchRect(tex, 0.36f, 0.30f, 0.64f, 0.38f);
+    }
+
+    private static void DrawCar(Texture2D tex, Color color)
+    {
+        FillRect(tex, 0.16f, 0.40f, 0.84f, 0.54f, color);
+        DrawTriangle(tex, color, 0.34f, 0.54f, 0.66f, 0.54f, 0.58f, 0.66f);
+        FillRect(tex, 0.34f, 0.54f, 0.60f, 0.66f, color);
+        FillCircle(tex, 0.32f, 0.38f, 0.10f, color);
+        FillCircle(tex, 0.68f, 0.38f, 0.10f, color);
+        PunchCircle(tex, 0.32f, 0.38f, 0.045f);
+        PunchCircle(tex, 0.68f, 0.38f, 0.045f);
+    }
+
+    private static void DrawFacility(Texture2D tex, Color color)
+    {
+        FillRect(tex, 0.24f, 0.20f, 0.76f, 0.74f, color);
+        for (int r = 0; r < 3; r++)
+            for (int c = 0; c < 3; c++)
+            {
+                float x = 0.30f + c * 0.15f;
+                float y = 0.30f + r * 0.13f;
+                PunchRect(tex, x, y, x + 0.08f, y + 0.07f);
+            }
+        PunchRect(tex, 0.44f, 0.20f, 0.56f, 0.30f);
+    }
+
+    private static void DrawHome(Texture2D tex, Color color)
+    {
+        DrawTriangle(tex, color, 0.18f, 0.54f, 0.82f, 0.54f, 0.5f, 0.82f);
+        FillRect(tex, 0.28f, 0.22f, 0.72f, 0.56f, color);
+        PunchRect(tex, 0.45f, 0.22f, 0.55f, 0.42f);
+        PunchRect(tex, 0.33f, 0.40f, 0.43f, 0.50f);
+        PunchRect(tex, 0.57f, 0.40f, 0.67f, 0.50f);
+    }
+
+    private static void DrawChevron(Texture2D tex, Color color)
+    {
+        Line(tex, 0.42f, 0.28f, 0.62f, 0.5f, 0.07f, color);
+        Line(tex, 0.62f, 0.5f, 0.42f, 0.72f, 0.07f, color);
     }
 }
