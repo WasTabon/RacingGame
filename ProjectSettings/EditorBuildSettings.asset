@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/RacingGame/Scenes/Car.unity
     guid: 387a96369f5b8ad43ae2ab9ede6faf52
+  - enabled: 1
+    path: Assets/RacingGame/Scenes/Base.unity
+    guid: cfbbffc673a32934992db0a7918382dd
   m_configObjects: {}
