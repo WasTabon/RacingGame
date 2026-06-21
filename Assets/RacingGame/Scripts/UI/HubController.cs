@@ -19,6 +19,7 @@ public class HubController : MonoBehaviour
     public CarRow[] carRows;
 
     public Button nextRaceButton;
+    public Button financeButton;
     public TMP_Text nextRaceRoundText;
     public TMP_Text nextRaceTrackText;
     public TMP_Text nextRaceInfoText;
@@ -39,6 +40,7 @@ public class HubController : MonoBehaviour
         WireNav();
         if (settingsButton != null) settingsButton.onClick.AddListener(() => settingsPopup.Show());
         if (nextRaceButton != null) nextRaceButton.onClick.AddListener(() => { SoundManager.Instance.PlayClick(); TransitionManager.Instance.LoadScene("Weekend"); });
+        if (financeButton != null) financeButton.onClick.AddListener(() => { SoundManager.Instance.PlayClick(); TransitionManager.Instance.LoadScene("Finance"); });
 
         SelectTab(0, false);
         PopulateTeam();

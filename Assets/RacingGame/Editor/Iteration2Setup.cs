@@ -99,6 +99,17 @@ public class Iteration2Setup
         SetRect(hud.GetComponent<RectTransform>(), new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 1), new Vector2(0, 160), Vector2.zero);
 
         ResourceCounter money = CreateChip(hud.transform, "MoneyChip", "money", ColorAccent, new Vector2(20, -16), new Vector2(300, 86), true);
+        Button financeBtn = money.gameObject.AddComponent<Button>();
+        financeBtn.targetGraphic = money.GetComponent<Image>();
+        ColorBlock fcb = financeBtn.colors;
+        fcb.normalColor = Color.white;
+        fcb.highlightedColor = Color.white;
+        fcb.pressedColor = new Color(0.85f, 0.85f, 0.85f);
+        fcb.selectedColor = Color.white;
+        fcb.disabledColor = Color.white;
+        financeBtn.colors = fcb;
+        money.gameObject.AddComponent<ButtonPunch>();
+        hub.financeButton = financeBtn;
         ResourceCounter rep = CreateChip(hud.transform, "RepChip", "reputation", new Color(0.96f, 0.78f, 0.25f), new Vector2(336, -16), new Vector2(210, 86), false);
 
         Button settingsBtn = CreateIconButton(hud.transform, "SettingsButton", "settings", Color.white, true);

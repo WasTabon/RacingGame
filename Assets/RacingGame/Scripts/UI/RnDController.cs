@@ -111,7 +111,7 @@ public class RnDController : MonoBehaviour
         for (int t = 0; t < team.techTrees.Count; t++)
         {
             TechTree tree = team.techTrees[t];
-            NewRow().Bind(TreeName(tree.type), "Tech tree    " + tree.CurrentLevel + "/5 unlocked", "TREE", TreeTag,
+            NewRow().Bind(TreeName(tree.type), "Tech tree    " + tree.CurrentLevel + "/5 unlocked    RP: " + team.researchPoints, "TREE", TreeTag,
                 tree.CurrentLevel, null, null, null, false);
 
             int nextLevel = NextLockedLevel(tree);
@@ -124,9 +124,15 @@ public class RnDController : MonoBehaviour
                 string sub = "+" + Mathf.RoundToInt(node.performanceBonus) + " performance    Lv " + node.level;
                 TechTreeType tt = tree.type;
                 string nid = node.id;
-                NewRow().Bind(node.nodeName, sub, tag, tagC, Mathf.RoundToInt(node.performanceBonus),
-                    null, isNext ? "Unlock " + ResourceCounter.FormatMoney(node.unlockCost) : null,
-                    () => UnlockNode(tt, nid), isNext && money >= node.unlockCost);
+                int rpCost = node.level * 40;
+
+                if (isNext && team.researchPoints >= rpCost)
+                    NewRow().Bind(node.nodeName, sub, tag, tagC, Mathf.RoundToInt(node.performanceBonus),
+                        null, "Unlock " + rpCost + " RP", () => UnlockNodeRP(tt, nid), true);
+                else
+                    NewRow().Bind(node.nodeName, sub, tag, tagC, Mathf.RoundToInt(node.performanceBonus),
+                        null, isNext ? "Unlock " + ResourceCounter.FormatMoney(node.unlockCost) : null,
+                        () => UnlockNode(tt, nid), isNext && money >= node.unlockCost);
             }
         }
         SetEmpty(team.techTrees.Count == 0, "No tech trees");
@@ -192,6 +198,26 @@ public class RnDController : MonoBehaviour
         if (node.level != NextLockedLevel(tree)) { SoundManager.Instance.PlayError(); return; }
         if (team.money < node.unlockCost) { SoundManager.Instance.PlayError(); return; }
         Pay(node.unlockCost);
+        node.unlocked = true;
+        ApplyTreeBonus(team, type, node.performanceBonus);
+        SoundManager.Instance.PlaySuccess();
+        HapticManager.Instance.Success();
+        AfterChange();
+    }
+
+    private void UnlockNodeRP(TechTreeType type, string nodeId)
+    {
+        GameState st = GameManager.Instance.State;
+        TeamData team = st.PlayerTeam;
+        TechTree tree = FindTree(team, type);
+        if (tree == null) return;
+        TechNode node = null;
+        for (int i = 0; i < tree.nodes.Count; i++) if (tree.nodes[i].id == nodeId) node = tree.nodes[i];
+        if (node == null || node.unlocked) return;
+        if (node.level != NextLockedLevel(tree)) { SoundManager.Instance.PlayError(); return; }
+        int rpCost = node.level * 40;
+        if (team.researchPoints < rpCost) { SoundManager.Instance.PlayError(); return; }
+        team.researchPoints -= rpCost;
         node.unlocked = true;
         ApplyTreeBonus(team, type, node.performanceBonus);
         SoundManager.Instance.PlaySuccess();

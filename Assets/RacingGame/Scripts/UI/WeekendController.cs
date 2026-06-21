@@ -38,6 +38,11 @@ public class WeekendController : MonoBehaviour
     private const float NoiseAmp = 0.06f;
     private const float DotLerp = 10f;
     private const float TowerLerp = 12f;
+    private const long PrizeTop = 8000000L;
+    private const long PrizeBottom = 500000L;
+    private const int ResearchBase = 25;
+    private const int SalaryRaces = 22;
+    private const long UpkeepPerLevel = 150000L;
 
     public Button backButton;
     public TMP_Text titleText;
@@ -82,6 +87,8 @@ public class WeekendController : MonoBehaviour
     private bool qualiDone;
     private float timeScale = 1f;
     private float rowH = 40f;
+    private long lastNet;
+    private int lastRP;
 
     private void Start()
     {
@@ -419,6 +426,8 @@ public class WeekendController : MonoBehaviour
         }
 
         WriteResults();
+        ApplySettlement();
+        SaveManager.Instance.SaveGame(GameManager.Instance.State);
         SoundManager.Instance.PlaySuccess();
         HapticManager.Instance.Success();
         SetPhase(3);
@@ -480,6 +489,73 @@ public class WeekendController : MonoBehaviour
         BuildSummary();
     }
 
+    private void ApplySettlement()
+    {
+        GameState st = GameManager.Instance.State;
+        TeamData team = st.PlayerTeam;
+
+        long prize = 0;
+        int rp = ResearchBase;
+        int count = Mathf.Max(entrants.Count, 2);
+        for (int i = 0; i < entrants.Count; i++)
+        {
+            RaceEntrant e = entrants[i];
+            if (!e.isPlayer) continue;
+            prize += PrizeForPosition(e.position, count);
+            rp += Mathf.Max(0, 11 - e.position);
+        }
+
+        long income = prize + SponsorIncome(team);
+        long expenses = PerRaceSalaries(team) + UpkeepPerRace(team);
+        long net = income - expenses;
+
+        team.money += net;
+        team.researchPoints += rp;
+        lastNet = net;
+        lastRP = rp;
+    }
+
+    private long PrizeForPosition(int pos, int count)
+    {
+        float frac = count > 1 ? (pos - 1) / (float)(count - 1) : 0f;
+        return (long)Mathf.Lerp(PrizeTop, PrizeBottom, frac);
+    }
+
+    private long SponsorIncome(TeamData team)
+    {
+        long sum = 0;
+        for (int i = 0; i < team.sponsors.Count; i++) sum += team.sponsors[i].perRacePayout;
+        return sum;
+    }
+
+    private long PerRaceSalaries(TeamData team)
+    {
+        GameState st = GameManager.Instance.State;
+        long annual = 0;
+        for (int i = 0; i < team.driverIds.Count; i++)
+        {
+            DriverData d = st.GetDriver(team.driverIds[i]);
+            if (d != null) annual += d.salary;
+        }
+        for (int i = 0; i < team.engineerIds.Count; i++)
+        {
+            EngineerData e = st.GetEngineer(team.engineerIds[i]);
+            if (e != null) annual += e.salary;
+        }
+        StaffData tp = st.GetStaff(team.teamPrincipalId);
+        if (tp != null) annual += tp.salary;
+        StaffData td = st.GetStaff(team.technicalDirectorId);
+        if (td != null) annual += td.salary;
+        return annual / SalaryRaces;
+    }
+
+    private long UpkeepPerRace(TeamData team)
+    {
+        long levels = 0;
+        for (int i = 0; i < team.facilities.Count; i++) levels += team.facilities[i].level;
+        return levels * UpkeepPerLevel;
+    }
+
     private void BuildSummary()
     {
         GameState st = GameManager.Instance.State;
@@ -499,7 +575,9 @@ public class WeekendController : MonoBehaviour
         for (int i = 0; i < st.season.constructorStandings.Count; i++)
             if (st.season.constructorStandings[i].id == "team_0") { champPos = i + 1; break; }
 
-        resultsSummaryText.text = "Best finish P" + best + "   •   " + pts + " points   •   Championship P" + champPos;
+        string netStr = (lastNet >= 0 ? "+" : "-") + ResourceCounter.FormatMoney(System.Math.Abs(lastNet));
+        resultsSummaryText.text = "Best P" + best + "   •   " + pts + " pts   •   Champ P" + champPos
+            + "\nPayout " + netStr + "   •   +" + lastRP + " RP";
     }
 
     private Color PosColor(int pos)

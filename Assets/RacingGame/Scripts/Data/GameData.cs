@@ -179,6 +179,16 @@ public class FacilityData
 }
 
 [Serializable]
+public class SponsorData
+{
+    public string id;
+    public string sponsorName;
+    public int perRacePayout;
+    public int signingBonus;
+    public int reputationRequired;
+}
+
+[Serializable]
 public class TeamData
 {
     public string id;
@@ -188,6 +198,8 @@ public class TeamData
 
     public long money;
     public int reputation;
+    public int researchPoints;
+    public List<SponsorData> sponsors = new List<SponsorData>();
 
     public List<CarData> cars = new List<CarData>();
     public List<string> driverIds = new List<string>();
