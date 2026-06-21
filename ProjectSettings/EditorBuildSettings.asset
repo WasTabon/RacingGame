@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/RacingGame/Scenes/Base.unity
     guid: cfbbffc673a32934992db0a7918382dd
+  - enabled: 1
+    path: Assets/RacingGame/Scenes/Weekend.unity
+    guid: 459a89e531b66e24f8a475a5c766780b
   m_configObjects: {}

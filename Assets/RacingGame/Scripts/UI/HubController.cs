@@ -38,7 +38,7 @@ public class HubController : MonoBehaviour
 
         WireNav();
         if (settingsButton != null) settingsButton.onClick.AddListener(() => settingsPopup.Show());
-        if (nextRaceButton != null) nextRaceButton.onClick.AddListener(() => calendarPopup.Show());
+        if (nextRaceButton != null) nextRaceButton.onClick.AddListener(() => { SoundManager.Instance.PlayClick(); TransitionManager.Instance.LoadScene("Weekend"); });
 
         SelectTab(0, false);
         PopulateTeam();
