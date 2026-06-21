@@ -29,7 +29,7 @@ public class HubController : MonoBehaviour
 
     private int currentTab = -1;
 
-    private static readonly string[] tabScenes = { null, "Staff", null, null, null };
+    private static readonly string[] tabScenes = { null, "Staff", "RnD", null, null };
 
     private void Start()
     {
