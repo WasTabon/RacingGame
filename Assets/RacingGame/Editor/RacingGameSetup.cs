@@ -97,6 +97,7 @@ public class RacingGameSetup
         Button newCareerBtn = CreateMenuButton(safe.transform, "NewCareerButton", "NEW CAREER", "flag", new Vector2(0, 60));
         Button continueBtn = CreateMenuButton(safe.transform, "ContinueButton", "CONTINUE", "continue", new Vector2(0, -110));
         Button settingsBtn = CreateMenuButton(safe.transform, "SettingsButton", "SETTINGS", "settings", new Vector2(0, -280));
+        Button tutorialBtn = CreateMenuButton(safe.transform, "TutorialButton", "HOW TO PLAY", "research", new Vector2(0, -450));
         CanvasGroup continueGroup = continueBtn.gameObject.AddComponent<CanvasGroup>();
 
         TextMeshProUGUI version = CreateText(safe.transform, "Version", "v0.1 - Iteration 1", 28, new Color(1, 1, 1, 0.4f), TextAlignmentOptions.Center);
@@ -117,6 +118,7 @@ public class RacingGameSetup
         menuUI.newCareerButton = newCareerBtn;
         menuUI.continueButton = continueBtn;
         menuUI.settingsButton = settingsBtn;
+        menuUI.tutorialButton = tutorialBtn;
         menuUI.difficultyPopup = diffPopup;
         menuUI.settingsPopup = setPopup;
         menuUI.continueGroup = continueGroup;

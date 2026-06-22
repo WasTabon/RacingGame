@@ -6,6 +6,7 @@ public class MainMenuUI : MonoBehaviour
     public Button newCareerButton;
     public Button continueButton;
     public Button settingsButton;
+    public Button tutorialButton;
     public DifficultyPopup difficultyPopup;
     public SettingsPopup settingsPopup;
     public CanvasGroup continueGroup;
@@ -19,6 +20,7 @@ public class MainMenuUI : MonoBehaviour
         newCareerButton.onClick.AddListener(OnNewCareer);
         continueButton.onClick.AddListener(OnContinue);
         settingsButton.onClick.AddListener(OnSettings);
+        if (tutorialButton != null) tutorialButton.onClick.AddListener(OnTutorial);
 
         TransitionManager.Instance.FadeIn();
     }
@@ -39,5 +41,11 @@ public class MainMenuUI : MonoBehaviour
     private void OnSettings()
     {
         settingsPopup.Show();
+    }
+
+    private void OnTutorial()
+    {
+        SoundManager.Instance.PlayClick();
+        TransitionManager.Instance.LoadScene("Tutorial");
     }
 }
